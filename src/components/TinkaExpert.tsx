@@ -19,6 +19,9 @@ const Snowflake = ({ className, size = 24 }: { className?: string, size?: number
 const Scale = ({ className, size = 24 }: { className?: string, size?: number }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
 );
+const Github = ({ className, size = 24 }: { className?: string, size?: number }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.24c3-.3 6-1.5 6-6.76a5.5 5.5 0 0 0-1.5-3.8c.15-.38.65-1.8-.15-3.8 0 0-1.2-.38-3.9 1.45a13.3 13.3 0 0 0-7 0C6.2 1.62 5 2 5 2c-.8 2-.3 3.42-.15 3.8A5.5 5.5 0 0 0 3.35 9.6c0 5.26 3 6.46 6 6.76-.7.62-1 1.5-1 2.5v4"/><path d="M7 20c-3.1 1-5-1-5-3"/></svg>
+);
 const RefreshCw = ({ className, size = 24 }: { className?: string, size?: number }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
 );
@@ -644,6 +647,11 @@ export default function App() {
                 Joan Peramas
             </a>
           </p>
+          <div className="mt-4 pt-4 border-t border-slate-800/50 w-full flex justify-center">
+            <a href="https://github.com/joanperamasc/fe_tinka_expert_ai" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-white transition-colors flex items-center gap-2">
+              <Github size={18} /> <span className="font-medium text-sm">Código Abierto en GitHub</span>
+            </a>
+          </div>
         </div>
       </footer>
     </div>
