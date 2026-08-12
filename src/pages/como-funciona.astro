@@ -1,0 +1,104 @@
+---
+import '../styles/global.css';
+---
+
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>¿Cómo funciona la IA? | Tinka Expert</title>
+    <meta name="description" content="Conoce la metodología detrás de las predicciones de Tinka Expert AI. Ley del tercio, gaps, sumas y frecuencias absolutas explicadas al detalle." />
+</head>
+<body class="bg-slate-900 text-slate-200 antialiased selection:bg-yellow-500/30">
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-xl sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
+          <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+             <div class="bg-gradient-to-br from-yellow-400 to-yellow-600 p-2.5 rounded-xl shadow-lg shadow-yellow-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-900"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+             </div>
+             <div>
+               <h1 class="text-2xl font-black tracking-tight text-white flex items-center gap-2">
+                 Tinka <span class="text-yellow-500">Expert</span> <span class="bg-yellow-500/10 text-yellow-500 text-xs py-1 px-2 rounded-md border border-yellow-500/20">AI</span>
+               </h1>
+             </div>
+          </a>
+          <a href="/" class="text-sm font-semibold text-slate-400 hover:text-white transition-colors">
+              &larr; Volver al inicio
+          </a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-16">
+        <div class="max-w-none">
+            <h1 class="text-4xl md:text-5xl font-black text-white mb-8 tracking-tight">La Ciencia Detrás de <span class="text-yellow-500">Nuestra IA</span></h1>
+            
+            <p class="text-xl text-slate-400 mb-12 leading-relaxed">
+                A diferencia de los sistemas de elección aleatoria ("Al azar"), Tinka Expert AI procesa la base de datos histórica completa de todos los sorteos, aplicando modelos estadísticos matemáticos para maximizar tus probabilidades de acertar.
+            </p>
+
+            <div class="space-y-10">
+                <section class="bg-slate-800/30 border border-slate-700/50 p-8 rounded-3xl hover:bg-slate-800/50 transition-colors">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-3 mb-4">
+                        <span class="text-yellow-500 text-3xl font-black">1.</span> Análisis de Frecuencias Absolutas
+                    </h2>
+                    <p class="text-slate-300 leading-relaxed text-lg">
+                        Nuestra red neuronal rastrea cuántas veces ha salido cada bolilla desde el inicio de los tiempos. Identificamos los números "Calientes" (los que más salen) y los "Fríos" (los más rezagados). En una muestra lo suficientemente grande, la lotería no es perfectamente aleatoria debido a las imperfecciones mecánicas de los bombos.
+                    </p>
+                </section>
+
+                <section class="bg-slate-800/30 border border-slate-700/50 p-8 rounded-3xl hover:bg-slate-800/50 transition-colors">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-3 mb-4">
+                        <span class="text-yellow-500 text-3xl font-black">2.</span> La Ley del Tercio
+                    </h2>
+                    <p class="text-slate-300 leading-relaxed text-lg">
+                        Un principio fundamental en los juegos de azar continuos. La Ley del Tercio dicta que en un ciclo de extracción (aprox. 50 sorteos), un tercio de los números no saldrá nunca, otro tercio saldrá exactamente una vez, y el último tercio saldrá múltiples veces. Nuestro algoritmo agrupa y predice cuáles números están listos para repetir su aparición y cuáles deben ser evitados.
+                    </p>
+                </section>
+
+                <section class="bg-slate-800/30 border border-slate-700/50 p-8 rounded-3xl hover:bg-slate-800/50 transition-colors">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-3 mb-4">
+                        <span class="text-yellow-500 text-3xl font-black">3.</span> Análisis de "Gaps" (Ausencias)
+                    </h2>
+                    <p class="text-slate-300 leading-relaxed text-lg">
+                        El "Gap" es la cantidad de sorteos consecutivos que un número lleva sin salir. La IA calcula el promedio histórico de ausencia de cada número y lo compara con su ausencia actual. Si un número ha superado su límite máximo de ausencia histórica, se convierte en un candidato inminente (Estrategia Rezagada).
+                    </p>
+                </section>
+
+                <section class="bg-slate-800/30 border border-slate-700/50 p-8 rounded-3xl hover:bg-slate-800/50 transition-colors">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-3 mb-4">
+                        <span class="text-yellow-500 text-3xl font-black">4.</span> Control de Sumas y Paridad
+                    </h2>
+                    <p class="text-slate-300 leading-relaxed mb-4 text-lg">
+                        Los sorteos ganadores casi nunca son extremos (ej: 1, 2, 3, 4, 5, 6). Existe una "Zona de Oro" matemática. Tinka Expert AI filtra las combinaciones para asegurar que:
+                    </p>
+                    <ul class="list-disc list-inside text-slate-300 space-y-2 text-lg">
+                        <li>La suma total de las 6 bolillas caiga dentro de la campana de Gauss histórica (usualmente la sumatoria da entre 120 y 180).</li>
+                        <li>Exista un balance ideal entre números pares e impares (ej: 3 pares y 3 impares, o 4/2).</li>
+                    </ul>
+                </section>
+            </div>
+            
+            <div class="mt-16 text-center">
+                <a href="/" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-yellow-500 hover:bg-yellow-400 text-slate-900 font-black rounded-xl transition-all shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:scale-105 text-lg">
+                    Generar Mi Jugada Ahora
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-slate-800/50 mt-12 py-8 bg-slate-900/50 backdrop-blur-sm">
+        <div class="max-w-6xl mx-auto px-4 text-center flex flex-col items-center">
+          <p class="text-slate-500 text-sm mb-4 max-w-2xl leading-relaxed">
+            Tinka Expert AI es una herramienta de análisis estadístico independiente diseñada para maximizar tus probabilidades de éxito mediante modelos matemáticos. Para registrar y realizar tus jugadas oficiales, visita la web oficial: <a href="https://www.latinka.com.pe" target="_blank" rel="noopener noreferrer" class="text-yellow-500 hover:text-yellow-400 transition-colors font-semibold underline underline-offset-4 decoration-yellow-500/30 hover:decoration-yellow-400">www.latinka.com.pe</a>.
+          </p>
+          <p class="text-slate-400 font-medium flex items-center justify-center gap-2">
+            Hecho con <span class="text-red-500 animate-pulse text-lg">❤</span> por 
+            <a href="mailto:info@peramas.com" class="text-yellow-500 hover:text-yellow-400 transition-colors font-bold underline underline-offset-4 decoration-yellow-500/30 hover:decoration-yellow-400">
+                Joan Peramas
+            </a>
+          </p>
+        </div>
+    </footer>
+</body>
+</html>
