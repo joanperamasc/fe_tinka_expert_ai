@@ -340,8 +340,11 @@ export default function App() {
                     <a href="/como-funciona" className="text-sm font-semibold text-slate-400 hover:text-yellow-400 transition-colors flex items-center gap-2">
                         <Info size={16} /> <span className="hidden sm:inline">¿Cómo funciona la IA?</span>
                     </a>
-                    <a href="https://github.com/joanperamasc/fe_tinka_expert_ai" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors" title="Ver código en GitHub">
+                    <a href="https://github.com/joanperamasc/fe_tinka_expert_ai" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors relative group">
                         <Github size={20} />
+                        <span className="absolute top-full mt-3 left-1/2 -translate-x-1/2 bg-slate-800 text-xs font-medium text-slate-200 px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100 whitespace-nowrap pointer-events-none shadow-[0_0_15px_rgba(0,0,0,0.5)] border border-slate-700">
+                            Ver código en GitHub
+                        </span>
                     </a>
                     <div className="hidden sm:flex flex-col items-end border-l border-slate-700 pl-6">
                         <div className="flex items-center gap-2">
