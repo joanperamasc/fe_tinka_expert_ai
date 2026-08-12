@@ -83,6 +83,7 @@ export default function App() {
     if (draws.length === 0) return null;
 
     const frequency: Record<number, number> = {};
+    const boliyapaFreq: Record<number, number> = {};
     const lastSeenIndex: Record<number, number> = {}; 
     const totalDraws = draws.length;
 
@@ -92,6 +93,10 @@ export default function App() {
         frequency[val] = (frequency[val] || 0) + 1;
         lastSeenIndex[val] = index; // Se actualizará hasta el índice más alto (más reciente)
       });
+      if (draw.numbers.length > 6) {
+        const boliyapa = draw.numbers[6];
+        boliyapaFreq[boliyapa] = (boliyapaFreq[boliyapa] || 0) + 1;
+      }
     });
 
     const gap: Record<number, number> = {};
@@ -112,13 +117,24 @@ export default function App() {
     // Para los fríos, ordenamos por "gap" descendente (los que llevan más tiempo sin salir)
     const coldNumbers = [...sortedNums].sort((a, b) => b.gap - a.gap).slice(0, 15).map(x => x.num);
 
+    const topBoliyapas = Object.entries(boliyapaFreq)
+      .map(([numStr, count]) => ({ num: parseInt(numStr, 10), count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+    const topHot = sortedNums.slice(0, 5);
+    const topRezagados = [...sortedNums].sort((a, b) => b.gap - a.gap).slice(0, 5);
+
     return {
       frequency,
       gap,
       sortedNums,
       totalDraws,
       hotNumbers,
-      coldNumbers
+      coldNumbers,
+      topHot,
+      topRezagados,
+      topBoliyapas
     };
   }, [draws]);
 
@@ -564,6 +580,82 @@ export default function App() {
                     )}
                 </div>
             </div>
+
+            {/* Panel de Métricas Top */}
+            {statistics && (
+              <div className="mt-12 lg:col-span-12 grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+                
+                {/* Top Calientes */}
+                <div className="bg-slate-900/80 backdrop-blur rounded-3xl p-6 border border-slate-700 shadow-2xl">
+                  <h3 className="text-white font-bold text-lg mb-6 flex items-center gap-2">
+                    <Flame className="text-red-500" /> Los 5 Más Calientes
+                  </h3>
+                  <div className="space-y-4">
+                    {statistics.topHot.map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <span className="text-slate-500 font-black text-sm w-4">{idx + 1}.</span>
+                          <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center font-bold text-white shadow-inner">
+                            {item.num}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-bold text-yellow-500">{item.count}</div>
+                          <div className="text-[10px] text-slate-500 uppercase tracking-wider">veces</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Top Rezagados */}
+                <div className="bg-slate-900/80 backdrop-blur rounded-3xl p-6 border border-slate-700 shadow-2xl">
+                  <h3 className="text-white font-bold text-lg mb-6 flex items-center gap-2">
+                    <Snowflake className="text-blue-500" /> Los 5 Más Rezagados
+                  </h3>
+                  <div className="space-y-4">
+                    {statistics.topRezagados.map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <span className="text-slate-500 font-black text-sm w-4">{idx + 1}.</span>
+                          <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center font-bold text-white shadow-inner">
+                            {item.num}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-bold text-blue-400">{item.gap}</div>
+                          <div className="text-[10px] text-slate-500 uppercase tracking-wider">ausencias</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Top Boliyapas */}
+                <div className="bg-slate-900/80 backdrop-blur rounded-3xl p-6 border border-slate-700 shadow-2xl">
+                  <h3 className="text-white font-bold text-lg mb-6 flex items-center gap-2">
+                    <Sparkles className="text-purple-500" /> Mejores Boliyapas
+                  </h3>
+                  <div className="space-y-4">
+                    {statistics.topBoliyapas.map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <span className="text-slate-500 font-black text-sm w-4">{idx + 1}.</span>
+                          <div className="w-10 h-10 rounded-full bg-purple-500/10 border border-purple-500/30 flex items-center justify-center font-bold text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.1)]">
+                            {item.num}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-bold text-purple-400">{item.count}</div>
+                          <div className="text-[10px] text-slate-500 uppercase tracking-wider">veces</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            )}
 
             {/* Tabla Virtualizada del Historial */}
             <div className="mt-12 lg:col-span-12 bg-slate-900/80 backdrop-blur rounded-3xl p-6 border border-slate-700 shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-700">
