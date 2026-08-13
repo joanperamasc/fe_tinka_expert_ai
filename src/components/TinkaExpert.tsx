@@ -38,6 +38,7 @@ const Zap = ({ className, size = 24 }: { className?: string, size?: number }) =>
 type PredictionType = 'balanced' | 'hot' | 'overdue';
 interface PredictionResult {
   numbers: number[];
+  boliyapa: number;
   type: PredictionType;
   stats: {
     sum: number;
@@ -61,11 +62,27 @@ export default function App() {
   const [selectedStrategy, setSelectedStrategy] = useState<PredictionType>('balanced');
   
   const parentRef = useRef<HTMLDivElement>(null);
+  const initialLoadDone = useRef(false);
 
   useEffect(() => {
-    fetch('/data/tinka.html')
-      .then(res => res.text())
-      .then(html => parseHtmlContent(html))
+    fetch('/data/tinka.json')
+      .then(res => res.json())
+      .then((data: any[]) => {
+        const formattedDraws: DrawRecord[] = data.map((item) => {
+          const numbers = [...item.n];
+          if (item.b !== null && item.b !== undefined) {
+             numbers.push(item.b);
+          }
+          return {
+             id: item.id.toString(),
+             date: item.f,
+             numbers: numbers
+          };
+        });
+        setDraws(formattedDraws);
+        setPrediction(null);
+        setError(null);
+      })
       .catch(err => {
         console.error('Error fetching data:', err);
         setError('Error al cargar la base de datos de sorteos.');
@@ -125,6 +142,16 @@ export default function App() {
     const topHot = sortedNums.slice(0, 5);
     const topRezagados = [...sortedNums].sort((a, b) => b.gap - a.gap).slice(0, 5);
 
+    const historyStrings = new Set<string>();
+    draws.forEach(d => {
+      const sorted6 = [...d.numbers].slice(0, 6).sort((a, b) => a - b);
+      if (sorted6.length === 6) {
+        historyStrings.add(sorted6.join(','));
+      }
+    });
+
+    const lastDraw = draws.length > 0 ? [...draws[0].numbers].slice(0, 6) : [];
+
     return {
       frequency,
       gap,
@@ -134,7 +161,9 @@ export default function App() {
       coldNumbers,
       topHot,
       topRezagados,
-      topBoliyapas
+      topBoliyapas,
+      historyStrings,
+      lastDraw
     };
   }, [draws]);
 
@@ -144,26 +173,37 @@ export default function App() {
     
     setTimeout(() => {
         const { hotNumbers, coldNumbers } = statistics;
-        let bestCombination: number[] = [];
+        let bestCombination: { main: number[], boliyapa: number } | null = null;
         let bestScore = -Infinity;
         let attempts = 0;
-        const MAX_ATTEMPTS = 2000;
+        const MAX_ATTEMPTS = 5000;
         
         while (attempts < MAX_ATTEMPTS) {
             attempts++;
             const candidate = generateCandidate(statistics, selectedStrategy);
             const score = evaluateCandidate(candidate, statistics, selectedStrategy);
             
+            // Historical Clone Filter (Anti-Clones)
+            const sortedCandidate = [...candidate.main].sort((a, b) => a - b);
+            const candidateStr = sortedCandidate.join(',');
+            if (statistics.historyStrings.has(candidateStr)) {
+                continue; // Exact match found in history, skip
+            }
+
             if (score > bestScore) {
                 bestScore = score;
                 bestCombination = candidate;
             }
             
-            // Umbral de perfección según estrategia
             if (bestScore >= 0.95) break; 
         }
 
-        const sorted = bestCombination.sort((a, b) => a - b);
+        if (!bestCombination) {
+             setLoading(false);
+             return;
+        }
+
+        const sorted = [...bestCombination.main].sort((a, b) => a - b);
         
         const sum = sorted.reduce((a, b) => a + b, 0);
         const odds = sorted.filter(n => n % 2 !== 0).length;
@@ -173,6 +213,7 @@ export default function App() {
 
         setPrediction({
             numbers: sorted,
+            boliyapa: bestCombination.boliyapa,
             type: selectedStrategy,
             stats: {
                 sum,
@@ -185,54 +226,75 @@ export default function App() {
     }, 800);
   };
 
-  const generateCandidate = (stats: any, strategy: PredictionType): number[] => {
+  useEffect(() => {
+    if (statistics && !initialLoadDone.current) {
+        initialLoadDone.current = true;
+        generatePrediction();
+    }
+  }, [statistics]);
+
+  const generateCandidate = (stats: any, strategy: PredictionType): { main: number[], boliyapa: number } => {
     const pool: number[] = [];
+    const boliyapaPool: number[] = [];
     const { frequency, gap } = stats;
 
     const maxCount = stats.sortedNums[0]?.count || 1;
 
     for (let i = 1; i <= 50; i++) {
         let weight = 1;
+        let bWeight = 1;
         
         const freqScore = (frequency[i] || 0) / maxCount;
         const gapScore = Math.min((gap[i] || 0), 100) / 100; // Normalizar gap
 
         if (strategy === 'hot') {
             weight += freqScore * 20; 
+            bWeight += gapScore * 10; 
         } else if (strategy === 'overdue') {
             weight += gapScore * 25;  
+            bWeight += gapScore * 25;
         } else { // Balanced
             weight += freqScore * 5;
             weight += gapScore * 5;
+            bWeight += gapScore * 10;
         }
 
         const entries = Math.max(1, Math.floor(weight * 10));
         for (let k = 0; k < entries; k++) pool.push(i);
+
+        const bEntries = Math.max(1, Math.floor(bWeight * 10));
+        for (let k = 0; k < bEntries; k++) boliyapaPool.push(i);
     }
 
     const selection = new Set<number>();
-    // Generamos 6 números para la jugada principal
     while (selection.size < 6) {
         const pick = pool[Math.floor(Math.random() * pool.length)];
         selection.add(pick);
     }
-    return Array.from(selection);
+    
+    let boliyapa = boliyapaPool[Math.floor(Math.random() * boliyapaPool.length)];
+    while (selection.has(boliyapa)) {
+        boliyapa = boliyapaPool[Math.floor(Math.random() * boliyapaPool.length)];
+    }
+
+    return { main: Array.from(selection), boliyapa };
   };
 
-  const evaluateCandidate = (numbers: number[], stats: any, strategy: PredictionType): number => {
+  const evaluateCandidate = (candidate: { main: number[], boliyapa: number }, stats: any, strategy: PredictionType): number => {
+      const numbers = candidate.main;
       const sum = numbers.reduce((a, b) => a + b, 0);
       const odds = numbers.filter(n => n % 2 !== 0).length;
       
       // 1. FILTRO DE SUMA ESTRICTO (El 70% de premios caen entre 106 y 170)
-      if (sum < 100 || sum > 200) return 0; // Inviable
+      if (sum < 100 || sum > 200) return -1; // Inviable
       let sumBonus = 0;
-      if (sum >= 115 && sum <= 165) sumBonus = 0.2; // Rango de oro
+      if (sum >= 115 && sum <= 165) sumBonus = 0.15; // Rango de oro
 
       // 2. FILTRO PAR/IMPAR (Ideal 3/3, aceptable 4/2 o 2/4)
-      if (odds === 0 || odds === 6) return 0; // Todo par o todo impar es rarisimo
+      if (odds === 0 || odds === 6) return -1; 
       let oddEvenBonus = 0;
-      if (odds === 3) oddEvenBonus = 0.2;
-      else if (odds === 2 || odds === 4) oddEvenBonus = 0.1;
+      if (odds === 3) oddEvenBonus = 0.15;
+      else if (odds === 2 || odds === 4) oddEvenBonus = 0.05;
 
       // 3. FILTRO DE CONSECUTIVOS
       const sorted = [...numbers].sort((a,b) => a-b);
@@ -240,97 +302,49 @@ export default function App() {
       for(let i=0; i<sorted.length-1; i++) {
           if (sorted[i+1] === sorted[i]+1) consecutives++;
       }
-      if (consecutives > 2) return 0.1; // Penalizar fuertemente si hay más de 2 pares seguidos (ej. 4,5,6)
+      if (consecutives > 2) return -1; 
 
-      // 4. SCORE ESTRATÉGICO
+      // 4. FILTRO DE DÉCADAS (Evitar 4 o más números en la misma decena)
+      const decades = [0, 0, 0, 0, 0, 0];
+      numbers.forEach(n => {
+          if (n < 10) decades[0]++;
+          else if (n < 20) decades[1]++;
+          else if (n < 30) decades[2]++;
+          else if (n < 40) decades[3]++;
+          else if (n < 50) decades[4]++;
+          else decades[5]++;
+      });
+      if (decades.some(d => d >= 4)) return -1;
+
+      // 5. FILTRO DE INTERSECCIÓN CON SORTEO ANTERIOR
+      let lastDrawBonus = 0;
+      if (stats.lastDraw && stats.lastDraw.length > 0) {
+          const overlap = numbers.filter(n => stats.lastDraw.includes(n)).length;
+          if (overlap === 1) lastDrawBonus = 0.15; 
+          else if (overlap > 2) return -1; 
+      }
+
+      // 6. SCORE ESTRATÉGICO
       let strategyScore = 0;
       const hotCount = numbers.filter(n => stats.hotNumbers.includes(n)).length;
       const coldCount = numbers.filter(n => stats.coldNumbers.includes(n)).length;
       
       if (strategy === 'hot') {
-          strategyScore = (hotCount / 6) * 0.6; 
+          strategyScore = (hotCount / 6) * 0.55; 
       } else if (strategy === 'overdue') {
-          strategyScore = (coldCount / 6) * 0.6;
-      } else { // Balanced (mezcla de calientes, fríos y neutros)
+          strategyScore = (coldCount / 6) * 0.55;
+      } else { 
           if (hotCount >= 2 && hotCount <= 3 && coldCount >= 1 && coldCount <= 2) {
-              strategyScore = 0.6; // Combinación perfecta de ley del tercio
+              strategyScore = 0.55; 
           } else {
-              strategyScore = 0.3;
+              strategyScore = 0.2;
           }
       }
 
-      return sumBonus + oddEvenBonus + strategyScore; // Max teórico ~ 1.0
+      return sumBonus + oddEvenBonus + lastDrawBonus + strategyScore; // Max teórico ~ 1.0
   };
 
-  const parseHtmlContent = (htmlContent: string) => {
-    try {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(htmlContent, 'text/html');
-      
-      const tables = doc.querySelectorAll('table');
-      if (tables.length === 0) {
-        setError('No se encontró ninguna tabla en el archivo HTML.');
-        return;
-      }
 
-      const extractedDraws: DrawRecord[] = [];
-
-      tables.forEach(table => {
-        const rows = Array.from(table.querySelectorAll('tr'));
-        rows.forEach(row => {
-          const tds = row.querySelectorAll('td');
-          // Necesitamos al menos 3 columnas (Sorteo, Fecha y al menos una de resultados)
-          if (tds.length >= 3) {
-            const dateText = tds[0].textContent?.trim() || '';
-            const idText = tds[1].textContent?.trim() || '';
-            
-            let rowNumbers: number[] = [];
-            
-            // Leemos TODAS las celdas a partir del índice 2 (ignorando N° de Sorteo y Fecha)
-            // Así atrapamos la boliyapa esté donde esté (en la misma celda o en una separada)
-            for (let i = 2; i < tds.length; i++) {
-               const cellText = tds[i].textContent || '';
-               const matches = cellText.match(/\b\d+\b/g); // Atrapa cualquier número
-               if (matches) {
-                   matches.forEach(m => {
-                       const num = parseInt(m, 10);
-                       // Solo guardamos números válidos del bombo (1 al 50)
-                       if (num >= 1 && num <= 50) {
-                           rowNumbers.push(num);
-                       }
-                   });
-               }
-            }
-
-            // Eliminamos duplicados (las tablas HTML suelen tener spans de texto ocultos para versión móvil)
-            const uniqueNumbers = Array.from(new Set(rowNumbers));
-
-            // Si logramos capturar al menos la jugada principal (6 bolillas)
-            if (uniqueNumbers.length >= 6) {
-              // Extraemos 7 números como máximo (6 principales + boliyapa)
-              extractedDraws.push({
-                  id: idText,
-                  date: dateText,
-                  numbers: uniqueNumbers.slice(0, 7)
-              });
-            }
-          }
-        });
-      });
-
-      if (extractedDraws.length === 0) {
-          setError('No se pudieron extraer las bolillas. Verifica que el archivo sea el histórico correcto.');
-          return;
-      }
-
-      setDraws(extractedDraws);
-      setPrediction(null);
-      setError(null);
-    } catch (err) {
-      setError('Error interno al procesar el archivo.');
-      console.error(err);
-    }
-  };
 
   // No se requiere carga manual ya que el histórico se lee directamente.
 
@@ -400,7 +414,22 @@ export default function App() {
 
         {/* Dashboard Principal */}
         {draws.length > 0 && statistics && (
-          <div className="grid lg:grid-cols-12 gap-8 animate-in fade-in zoom-in-95 duration-500">
+          <div className="space-y-6">
+            {/* Banner de Estrategia */}
+            <div className="bg-gradient-to-r from-yellow-500/10 to-transparent border border-yellow-500/20 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                <div className="flex items-start sm:items-center gap-4">
+                    <div className="bg-yellow-500/20 p-2 rounded-xl text-xl shrink-0">⭐</div>
+                    <div>
+                        <h4 className="text-yellow-500 font-bold text-sm sm:text-base">Aplica la Estrategia del "Ticket Perfecto"</h4>
+                        <p className="text-slate-300 text-xs sm:text-sm mt-1">Descubre cómo combinar 4 jugadas para cubrir todos los escenarios probabilísticos.</p>
+                    </div>
+                </div>
+                <a href="/como-funciona" className="shrink-0 bg-yellow-500 hover:bg-yellow-400 text-slate-900 text-xs sm:text-sm font-bold py-2 px-5 rounded-xl transition-all shadow-[0_0_15px_rgba(234,179,8,0.2)] hover:scale-105 block text-center w-full sm:w-auto">
+                    Leer Guía
+                </a>
+            </div>
+
+            <div className="grid lg:grid-cols-12 gap-8 animate-in fade-in zoom-in-95 duration-500">
             
             {}
             <div className="lg:col-span-4 space-y-6">
@@ -514,7 +543,6 @@ export default function App() {
                                 </h2>
                             </div>
 
-                            {/* Renderizado de Bolillas */}
                             <div className="flex flex-wrap justify-center gap-4 sm:gap-6 lg:gap-8 mb-16">
                                 {prediction.numbers.map((num, i) => (
                                     <div key={i} className="group relative">
@@ -534,6 +562,24 @@ export default function App() {
                                         </div>
                                     </div>
                                 ))}
+                                
+                                {/* Separador visual */}
+                                <div className="flex items-center justify-center h-16 sm:h-20 lg:h-24 text-slate-500 font-bold text-3xl mx-2">+</div>
+
+                                {/* Boliyapa */}
+                                <div className="group relative">
+                                    <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-red-100 via-red-500 to-red-700 shadow-[inset_-4px_-4px_10px_rgba(0,0,0,0.3),0_10px_20px_rgba(0,0,0,0.5)] flex items-center justify-center border-4 border-red-200/50 transform transition-transform duration-300 group-hover:-translate-y-3 cursor-default">
+                                        <span className="text-white font-black text-3xl sm:text-4xl lg:text-5xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+                                            {prediction.boliyapa}
+                                        </span>
+                                    </div>
+                                    <div className="w-10 h-2 bg-black/40 rounded-full mx-auto mt-3 blur-sm group-hover:scale-75 group-hover:opacity-50 transition-all duration-300"></div>
+                                    <div className="absolute -top-14 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-800 text-white text-xs py-1.5 px-3 rounded-lg border border-slate-700 whitespace-nowrap shadow-xl pointer-events-none flex flex-col items-center z-50">
+                                        <span className="text-red-400 font-bold mb-1">BOLIYAPA</span>
+                                        <span>Histórico: <strong>{statistics.frequency[prediction.boliyapa] || 0}</strong> veces</span>
+                                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-transparent border-t-slate-800"></div>
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Métricas de Validación */}
@@ -729,6 +775,7 @@ export default function App() {
                 </div>
             </div>
 
+          </div>
           </div>
         )}
       </main>

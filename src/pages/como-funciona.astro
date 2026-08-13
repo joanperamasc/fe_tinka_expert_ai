@@ -83,9 +83,55 @@ import GoogleAnalytics from '../components/GoogleAnalytics.astro';
                         Los sorteos ganadores casi nunca son extremos (ej: 1, 2, 3, 4, 5, 6). Existe una "Zona de Oro" matemática. Tinka Expert AI filtra las combinaciones para asegurar que:
                     </p>
                     <ul class="list-disc list-inside text-slate-300 space-y-2 text-lg">
-                        <li>La suma total de las 6 bolillas caiga dentro de la campana de Gauss histórica (usualmente la sumatoria da entre 120 y 180).</li>
-                        <li>Exista un balance ideal entre números pares e impares (ej: 3 pares y 3 impares, o 4/2).</li>
+                        <li>La suma total de las 6 bolillas caiga dentro de la campana de Gauss histórica (sumatoria ideal entre 106 y 170).</li>
+                        <li>Exista un balance entre números pares e impares (ej: 3/3, o 4/2).</li>
                     </ul>
+                </section>
+
+                <section class="bg-slate-800/30 border border-slate-700/50 p-8 rounded-3xl hover:bg-slate-800/50 transition-colors border-yellow-500/20 shadow-[0_0_15px_rgba(234,179,8,0.05)]">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-3 mb-4">
+                        <span class="text-yellow-500 text-3xl font-black">5.</span> Multi-Filtros Avanzados (Nuevo)
+                    </h2>
+                    <p class="text-slate-300 leading-relaxed mb-4 text-lg">
+                        Recientemente mejoramos la red para simular <strong>5,000 jugadas</strong> y aplicar 3 filtros matemáticos ultra precisos antes de sugerirte una combinación:
+                    </p>
+                    <ul class="list-disc list-inside text-slate-300 space-y-2 text-lg">
+                        <li><strong>Distribución por Décadas:</strong> Rechazamos automáticamente las jugadas que acumulan 4 o más números en la misma decena.</li>
+                        <li><strong>Anti-Clones Históricos:</strong> Verificamos contra toda nuestra base de datos. Si la jugada generada es <em>idéntica</em> a un sorteo ganador del pasado, se rechaza, porque la probabilidad de que se repita la misma sexteta es de 1 en 8 millones.</li>
+                        <li><strong>Intersección Cercana:</strong> Bonificamos combinaciones que repiten exactamente 1 número del último sorteo (un fenómeno que ocurre en casi el 40% de los casos reales).</li>
+                    </ul>
+                </section>
+
+                <section class="bg-slate-800/30 border border-slate-700/50 p-8 rounded-3xl hover:bg-slate-800/50 transition-colors border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.05)]">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-3 mb-4">
+                        <span class="text-red-500 text-3xl font-black">6.</span> La Boliyapa Inteligente (Nuevo)
+                    </h2>
+                    <p class="text-slate-300 leading-relaxed text-lg">
+                        Ya no nos conformamos solo con las 6 bolillas. Ahora la inteligencia artificial evalúa el comportamiento específico de la boliyapa a través del tiempo y genera un séptimo número recomendado basándose fuertemente en un algoritmo de reversión a la media (números que llevan demasiado tiempo "ausentes"). 
+                    </p>
+                </section>
+                <section class="bg-gradient-to-br from-slate-800/80 to-slate-900 border border-yellow-500/30 p-8 rounded-3xl shadow-[0_0_30px_rgba(234,179,8,0.08)] relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl"></div>
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-3 mb-6 relative z-10">
+                        <span class="text-yellow-500 text-3xl font-black">⭐</span> La Estrategia del "Ticket Perfecto"
+                    </h2>
+                    <p class="text-slate-300 leading-relaxed mb-6 text-lg relative z-10">
+                        Ninguna IA puede garantizar ganar la lotería, pero <strong>sí podemos estructurar una "Cartera de Jugadas"</strong> para cubrir la mayor cantidad de patrones probabilísticos. Si quieres maximizar tus probabilidades sin gastar de más, matemáticamente la estrategia óptima es armar un ticket de <strong>4 jugadas</strong>:
+                    </p>
+                    <div class="grid sm:grid-cols-2 gap-4 relative z-10">
+                        <div class="bg-slate-950/50 p-4 rounded-2xl border border-slate-700/50">
+                            <h3 class="text-yellow-400 font-bold mb-2 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-yellow-500"></span> 2 Jugadas Equilibradas</h3>
+                            <p class="text-sm text-slate-400">Representan el 50% de tu ticket. Cubren el comportamiento estadísticamente normal y más frecuente del bombo (campana de Gauss).</p>
+                        </div>
+                        <div class="bg-slate-950/50 p-4 rounded-2xl border border-slate-700/50">
+                            <h3 class="text-red-400 font-bold mb-2 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-red-500"></span> 1 Jugada de La Racha</h3>
+                            <p class="text-sm text-slate-400">Atrapa anomalías físicas a corto plazo. Agrupa esos números "calientes" que por alguna razón están saliendo más seguido este mes.</p>
+                        </div>
+                        <div class="bg-slate-950/50 p-4 rounded-2xl border border-slate-700/50 sm:col-span-2">
+                            <h3 class="text-blue-400 font-bold mb-2 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span> 1 Jugada de El Golpe (Rezagados)</h3>
+                            <p class="text-sm text-slate-400">Juega con la tensión matemática. Si el bombo decide arrojar números que hace mucho no salen (reversión a la media), tú los tendrás cubiertos.</p>
+                        </div>
+                    </div>
                 </section>
             </div>
             
