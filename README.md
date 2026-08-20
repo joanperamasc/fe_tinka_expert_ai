@@ -5,7 +5,7 @@ Una aplicación web de alto rendimiento orientada al análisis estadístico e in
 ## 🚀 Tecnologías (Tech Stack)
 - **Framework Principal:** [Astro](https://astro.build/) (Renderizado estático súper rápido y SEO de primera).
 - **Interactividad:** [React 18+](https://react.dev/) (Astro Islands para el procesamiento del Dashboard).
-- **Estilos:** [Tailwind CSS v4](https://tailwindcss.com/) (Estética *Premium Dark Mode* con utilidades nativas y glassmorphism).
+- **Estilos:** [Tailwind CSS v4](https://tailwindcss.com/) (Estética *Premium Dark Mode* con esquema de colores inspirado en el look & feel de **La Tinka**).
 - **Virtualización:** `@tanstack/react-virtual` (Manejo eficiente del DOM para renderizar miles de sorteos sin lag).
 
 ## ✨ Características Principales

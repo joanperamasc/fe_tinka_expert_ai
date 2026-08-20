@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@theme {
+  /* La Tinka Brand Colors (Overriding default Tailwind colors) */
+  --color-yellow-400: #FFEA00;
+  --color-yellow-500: #FFCC00;
+  --color-red-500: #E30613;
+  --color-green-500: #008638;
+  --color-green-600: #00662A;
+}

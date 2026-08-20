@@ -1,0 +1,40 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  canonicalUrl?: string;
+  type?: "website" | "article";
+}
+
+const {
+  title,
+  description,
+  image = "https://tinkaexpert.peramas.com/social-preview.jpg",
+  canonicalUrl = Astro.url.href,
+  type = "website"
+} = Astro.props;
+---
+
+<!-- SEO Básico -->
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="keywords" content="Tinka, predicciones Tinka, resultados Tinka, estadísticas Tinka, ganar la Tinka, lotería Perú, inteligencia artificial Tinka, Intralot, sorteo Tinka" />
+<meta name="author" content="Tinka Expert" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href={canonicalUrl} />
+<meta name="theme-color" content="#1a1b26" />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={image} />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonicalUrl} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={image} />

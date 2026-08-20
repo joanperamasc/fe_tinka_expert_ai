@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import GoogleAnalytics from '../components/GoogleAnalytics.astro';
+import SEO from '../components/SEO.astro';
 ---
 
 <html lang="es">
@@ -9,10 +10,38 @@ import GoogleAnalytics from '../components/GoogleAnalytics.astro';
     <GoogleAnalytics measurementId="G-TQ303V2TR4" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>¿Cómo funciona la IA? | Tinka Expert</title>
-    <meta name="description" content="Conoce la metodología detrás de las predicciones de Tinka Expert AI. Ley del tercio, gaps, sumas y frecuencias absolutas explicadas al detalle." />
+    
+    <SEO 
+        title="¿Cómo funciona la IA? | Tinka Expert"
+        description="Conoce la metodología científica detrás de las predicciones de Tinka Expert AI. Ley del tercio, gaps, sumas y frecuencias absolutas explicadas al detalle."
+        canonicalUrl="https://tinkaexpert.peramas.com/como-funciona"
+        type="article"
+    />
+
+    <!-- Datos Estructurados JSON-LD (FAQ) -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [{
+                "@type": "Question",
+                "name": "¿Cómo predice Tinka Expert los números ganadores?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Tinka Expert utiliza modelos matemáticos basados en el historial completo de sorteos de La Tinka. Aplica la Ley del Tercio, análisis de frecuencias absolutas y el estudio de gaps (ausencias) para generar jugadas equilibradas, calientes (La Racha) y rezagadas (El Golpe)."
+                }
+            }, {
+                "@type": "Question",
+                "name": "¿Tinka Expert garantiza ganar la lotería?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ninguna inteligencia artificial puede garantizar ganar la lotería. Tinka Expert sirve para estructurar de forma inteligente tus jugadas y maximizar estadísticamente tus probabilidades, cubriendo los escenarios y distribuciones más comunes en los sorteos."
+                }
+            }]
+        }
+    </script>
 </head>
-<body class="bg-slate-900 text-slate-200 antialiased selection:bg-yellow-500/30">
+<body class="bg-slate-900 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-yellow-900/20 via-slate-900 to-slate-900 text-slate-200 antialiased selection:bg-yellow-500/30">
     <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-xl sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
           <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">

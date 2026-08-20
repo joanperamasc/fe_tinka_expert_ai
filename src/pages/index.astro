@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import TinkaExpert from '../components/TinkaExpert.tsx';
 import GoogleAnalytics from '../components/GoogleAnalytics.astro';
+import SEO from '../components/SEO.astro';
 ---
 
 <html lang="es">
@@ -12,29 +13,30 @@ import GoogleAnalytics from '../components/GoogleAnalytics.astro';
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="generator" content={Astro.generator} />
 		
-		<!-- SEO Básico -->
-		<title>Tinka Expert AI | Análisis Estadístico y Predicciones de la Tinka</title>
-		<meta name="description" content="Maximiza tus oportunidades de ganar la Tinka con Tinka Expert AI. Procesamos el historial completo de sorteos utilizando inteligencia estadística, la Ley del Tercio, análisis de Gaps y frecuencias matemáticas para generar tu próxima jugada." />
-		<meta name="keywords" content="Tinka, predicciones Tinka, resultados Tinka, estadísticas Tinka, ganar la Tinka, lotería Perú, inteligencia artificial Tinka, Intralot, sorteo Tinka" />
-		<meta name="author" content="Tinka Expert" />
-		<meta name="robots" content="index, follow" />
-		<link rel="canonical" href="https://tinkaexpert.pe/" />
+		<SEO 
+			title="Tinka Expert AI | Análisis Estadístico y Predicciones de la Tinka"
+			description="Maximiza tus oportunidades de ganar la Tinka con Tinka Expert AI. Procesamos el historial completo de sorteos utilizando inteligencia estadística, la Ley del Tercio, análisis de Gaps y frecuencias matemáticas para generar tu próxima jugada."
+			canonicalUrl="https://tinkaexpert.peramas.com/"
+		/>
 
-		<!-- Open Graph / Facebook -->
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content="https://tinkaexpert.pe/" />
-		<meta property="og:title" content="Tinka Expert AI | Análisis Estadístico y Predicciones" />
-		<meta property="og:description" content="Aumenta tus probabilidades de ganar la Tinka. Analizamos el historial de sorteos para recomendarte jugadas basadas en pura matemática." />
-		<meta property="og:image" content="https://tinkaexpert.pe/social-preview.jpg" />
-
-		<!-- Twitter -->
-		<meta property="twitter:card" content="summary_large_image" />
-		<meta property="twitter:url" content="https://tinkaexpert.pe/" />
-		<meta property="twitter:title" content="Tinka Expert AI | Análisis Estadístico y Predicciones" />
-		<meta property="twitter:description" content="Aumenta tus probabilidades de ganar la Tinka. Analizamos el historial de sorteos para recomendarte jugadas basadas en pura matemática." />
-		<meta property="twitter:image" content="https://tinkaexpert.pe/social-preview.jpg" />
+		<!-- Datos Estructurados JSON-LD -->
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "WebApplication",
+				"name": "Tinka Expert AI",
+				"url": "https://tinkaexpert.peramas.com",
+				"description": "Herramienta de análisis estadístico independiente para la lotería peruana La Tinka. Aplica modelos matemáticos para maximizar las probabilidades de acierto.",
+				"applicationCategory": "UtilityApplication",
+				"operatingSystem": "All",
+				"author": {
+					"@type": "Person",
+					"name": "Joan Peramas"
+				}
+			}
+		</script>
 	</head>
-	<body class="bg-slate-900 text-slate-200 antialiased selection:bg-yellow-500/30">
+	<body class="bg-slate-900 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-yellow-900/20 via-slate-900 to-slate-900 text-slate-200 antialiased selection:bg-yellow-500/30">
 		<TinkaExpert client:load />
 	</body>
 </html>
