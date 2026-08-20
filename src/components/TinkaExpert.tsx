@@ -65,7 +65,7 @@ export default function App() {
   const initialLoadDone = useRef(false);
 
   useEffect(() => {
-    fetch('/data/tinka.json')
+    fetch('https://xsuerte-landing-zone-prod.s3.us-east-1.amazonaws.com/latest/tinka.json')
       .then(res => res.json())
       .then((data: any[]) => {
         const formattedDraws: DrawRecord[] = data.map((item) => {
