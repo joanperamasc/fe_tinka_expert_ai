@@ -65,27 +65,41 @@ export default function App() {
   const initialLoadDone = useRef(false);
 
   useEffect(() => {
+    const processData = (data: any[]) => {
+      const formattedDraws: DrawRecord[] = data.map((item) => {
+        const numbers = [...item.n];
+        if (item.b !== null && item.b !== undefined) {
+           numbers.push(item.b);
+        }
+        return {
+           id: item.id.toString(),
+           date: item.f,
+           numbers: numbers
+        };
+      });
+      setDraws(formattedDraws);
+      setPrediction(null);
+      setError(null);
+    };
+
     fetch('https://xsuerte-landing-zone-prod.s3.us-east-1.amazonaws.com/latest/tinka.json')
-      .then(res => res.json())
-      .then((data: any[]) => {
-        const formattedDraws: DrawRecord[] = data.map((item) => {
-          const numbers = [...item.n];
-          if (item.b !== null && item.b !== undefined) {
-             numbers.push(item.b);
-          }
-          return {
-             id: item.id.toString(),
-             date: item.f,
-             numbers: numbers
-          };
-        });
-        setDraws(formattedDraws);
-        setPrediction(null);
-        setError(null);
+      .then(res => {
+        if (!res.ok) throw new Error('S3 fetch failed');
+        return res.json();
       })
+      .then(processData)
       .catch(err => {
-        console.error('Error fetching data:', err);
-        setError('Error al cargar la base de datos de sorteos.');
+        console.warn('Error fetching from S3, falling back to local data:', err);
+        fetch('/data/tinka.json')
+          .then(res => {
+            if (!res.ok) throw new Error('Local fetch failed');
+            return res.json();
+          })
+          .then(processData)
+          .catch(localErr => {
+            console.error('Error fetching data from both sources:', localErr);
+            setError('Error al cargar la base de datos de sorteos.');
+          });
       });
   }, []);
 
